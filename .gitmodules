@@ -1,0 +1,10 @@
+[submodule "Engine/Thirdparty/imgui/imgui"]
+	path = Engine/Thirdparty/imgui/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
+[submodule "Engine/Thirdparty/glfw"]
+	path = Engine/Thirdparty/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "Engine/Thirdparty/glm"]
+	path = Engine/Thirdparty/glm
+	url = https://github.com/g-truc/glm.git
