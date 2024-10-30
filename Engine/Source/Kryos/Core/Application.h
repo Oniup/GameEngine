@@ -18,7 +18,7 @@ namespace Kryos
 
 		KY_FORCE_INLINE const char* operator[](int index) const
 		{
-			KY_ASSERT(index < m_Count, "Index overflow violation");
+			KY_ASSERT(index < m_Count, "Index overflow {}", "violation");
 			return m_Args[index];
 		}
 
@@ -38,31 +38,42 @@ namespace Kryos
 	class Application
 	{
 	public:
-		Application(ApplicationSpecification&& info);
-		virtual ~Application();
+		Application(ApplicationSpecification&& specification);
+		 virtual ~Application();
 
-		virtual void OnStart() = 0;
-
+		virtual void OnStart() {}
 		void Run();
 
 		template <typename TModule, typename... TArgs>
 		static TModule* PushModule(TArgs&&... args)
 		{
+			m_Modules.emplace(Meta::GetTypeHash<TModule>(), new TModule(std::forward<TArgs>(args)...));
+			KY_ASSERT(m_Modules.back().second, "Failed to load");
+			return static_cast<TModule*>(m_Modules.back().second);
 		}
 
 		template <typename TModule>
 		static TModule* GetModule()
 		{
-			for (ApplicationModule* module : m_Modules)
+			constexpr size_t hash = Meta::GetTypeHash<TModule>();
+			for (auto entry : m_Modules)
 			{
+				if (entry.first == hash)
+					return static_cast<TModule*>(entry.second);
 			}
+			return nullptr;
+		}
+
+		template<typename TModule>
+		static bool ModuleExists()
+		{
+			return GetModule<TModule>() != nullptr;
 		}
 
 	private:
 		ApplicationSpecification m_Secification;
-		bool m_Running = true;
-		std::vector<ApplicationModule*> m_Modules;
-		std::mutex m_MainThread;
+		bool m_Running;
+		std::vector<std::pair<size_t, ApplicationModule*>> m_Modules;
 
 		static Application* s_Instance;
 	};

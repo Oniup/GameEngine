@@ -36,23 +36,14 @@
 #endif
 
 #if defined(KY_DEBUG) || defined(KY_RELEASE)
-
-namespace Kryos::Detail
-{
-
-	KY_FORCE_INLINE void AssertMessage(bool expression_result, const std::string_view& fileName, const std::string_view& functionName, int line, 
-									   const std::string_view& expression, const std::string_view& formattedMessage)
-	{
-		if (!expression_result)
-		{
-			fmt::print(stderr, fmt::emphasis::bold | fmt::fg(fmt::color::indian_red), 
-				"[ASSERT({} == false)] {}:{}:{}: {}", expression, std::filesystem::path(fileName).filename().c_str(), functionName, line, formattedMessage);
-		}
-	}
-
-}
-
-#	define KY_ASSERT(_Expression, ...) Kryos::Detail::AssertMessage((_Expression), __FILE__, __FUNCTION__, __LINE__, #_Expression, fmt::format(__VA_ARGS__))
+#	define KY_ASSERT(_Expression, ...)																									 \
+		if (!(_Expression))																												 \
+		{																																 \
+			fmt::print(stderr, std::filesystem::path(__FILE__).string(), __FUNCTION__, __LINE__, #_Expression, fmt::format(__VA_ARGS__));\
+			KY_GENERATE_TRAP();																											 \
+		}																																 \
+		else																															 \
+			((void)0)
 #else
 #	define KY_ASSERT(_Expression, ...)
 #endif

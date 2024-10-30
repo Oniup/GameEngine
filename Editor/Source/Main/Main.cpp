@@ -1,10 +1,17 @@
 #define GLFW_INCLUDE_NONE
 
 #include "Kryos/Core/Application.h"
+#include "Kryos/Core/Defines.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <vector>
 #include <iostream>
+
+// - Finish application implementation
+// - Test log impl and its integrating into application as a module
+// - Start renderer module implementation and window handle
+// - Start ImGui module 
 
 int main(int argc, char** argv)
 {

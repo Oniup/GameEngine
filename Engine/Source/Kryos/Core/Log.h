@@ -75,6 +75,9 @@ namespace Kryos
 		static void PrintToAllOutputs(const LogEntry& entry);
 
 	private:
+		void ImplPushOutput(LogOutput* output);
+		void ImplPrintToAllOutputs(const LogEntry& entry);
+
 		std::vector<LogOutput*> m_Outputs;
 	};
 

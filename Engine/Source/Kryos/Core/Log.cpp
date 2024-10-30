@@ -53,7 +53,7 @@ namespace Kryos
 			file = stdout;
 
 		fmt::print(file, fmt::emphasis::italic | fg(entry.SeverityToColor()), "[{} {}:{}:{}]: {}\n",
-			entry.SeverityToString(), std::filesystem::path(entry.File).filename().c_str(), entry.Function, entry.Line, entry.Message);
+			entry.SeverityToString(), std::filesystem::path(entry.File).string(), entry.Function, entry.Line, entry.Message);
 	}
 
 	FileLogOutput::FileLogOutput(const std::string& outputPath, int severityFilter /*= LogOutput_Trace | LogOutput_VerboseInfo*/)
@@ -67,7 +67,7 @@ namespace Kryos
 		std::FILE* file = std::fopen(m_OutputPath.c_str(), "a");
 
 		fmt::print(file, fmt::emphasis::italic | fg(entry.SeverityToColor()), "[{} {}:{}:{}]: {}\n",
-			entry.SeverityToString(), std::filesystem::path(entry.File).filename().c_str(), entry.Function, entry.Line, entry.Message);
+			entry.SeverityToString(), std::filesystem::path(entry.File).string(), entry.Function, entry.Line, entry.Message);
 	}
 
 	Log::~Log()
@@ -78,11 +78,20 @@ namespace Kryos
 
 	void Log::PushOutput(LogOutput* output)
 	{
+	}
+
+	void Log::PrintToAllOutputs(const LogEntry& entry)
+	{
+
+	}
+
+	void Log::ImplPushOutput(LogOutput* output)
+	{
 		KY_ASSERT(output, "Log output is nullptr");
 		m_Outputs.push_back(output);
 	}
 
-	void Log::PrintToAllOutputs(const LogEntry& entry)
+	void Log::ImplPrintToAllOutputs(const LogEntry& entry)
 	{
 		for (LogOutput* output : m_Outputs)
 			output->Print(entry);
