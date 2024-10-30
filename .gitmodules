@@ -5,6 +5,12 @@
 [submodule "Engine/Thirdparty/glfw"]
 	path = Engine/Thirdparty/glfw
 	url = https://github.com/glfw/glfw.git
+	tag = 3.4
 [submodule "Engine/Thirdparty/glm"]
 	path = Engine/Thirdparty/glm
 	url = https://github.com/g-truc/glm.git
+	tag = 1.0.1
+[submodule "Engine/Thirdparty/fmt"]
+	path = Engine/Thirdparty/fmt
+	url = https://github.com/fmtlib/fmt.git
+	tag = 11.0.2

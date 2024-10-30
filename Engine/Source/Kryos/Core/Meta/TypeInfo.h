@@ -9,7 +9,7 @@
 #	include <hash_func>
 #endif
 
-namespace Oniun::Meta
+namespace Kryos::Meta
 {
 
 	namespace Detail

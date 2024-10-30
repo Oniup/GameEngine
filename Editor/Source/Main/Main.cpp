@@ -1,11 +1,10 @@
 #define GLFW_INCLUDE_NONE
 
-#include <iostream>
-#include <Oniun/Core/Application.h>
-#include <Oniun/Core/Meta/TypeInfo.h>
+#include "Kryos/Core/Application.h"
 #include <glad/glad.h>
-#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <iostream>
 
 int main(int argc, char** argv)
 {
@@ -16,8 +15,6 @@ int main(int argc, char** argv)
 	GLFWwindow* window = glfwCreateWindow(winSize.x, winSize.y, "Test Window", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
-	std::cout << "TypeName: " << Oniun::Meta::GetTypeName<glm::ivec2>() << "\n";
 
 	while (!glfwWindowShouldClose(window))
 	{

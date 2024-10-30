@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Oniun
+namespace Kryos
 {
 
 	class Time

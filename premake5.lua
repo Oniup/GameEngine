@@ -1,11 +1,11 @@
-workspace "Oniun"
+workspace "Kryos Game Engine"
 	architecture "x64"
 	configurations { 
 		"Debug",
 		"Release",
 		"Dist",
 	}
-	startproject "OniunEditor"
+	startproject "KryosEditor"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

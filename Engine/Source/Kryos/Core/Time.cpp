@@ -1,7 +1,7 @@
 #include "Time.h"
 #include <GLFW/glfw3.h>
 
-namespace Oniun
+namespace Kryos
 {
 
 	float Time::s_LastTime = 0.0f;

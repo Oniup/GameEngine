@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Oniun/Core/Time.h"
+#include "Kryos/Core/Time.h"
 
-namespace Oniun
+namespace Kryos
 {
 
 	class ApplicationModule

@@ -1,9 +1,9 @@
-project "OniunEditor"
+project "KryosEditor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	targetdir("../bin/" .. outputdir .. "/%{prj.name}")
-	objdir("../bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+	objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files {
 		"Source/**.h",
@@ -11,34 +11,43 @@ project "OniunEditor"
 	}
 
 	includedirs {
-		"../Engine/Source",
-		"../Engine/Thirdparty/glfw/include",
-		"../Engine/Thirdparty/glad/include",
-		"../Engine/Thirdparty/glm",
+		"%{wks.location}/Engine/Source",
+		"%{wks.location}/Engine/Thirdparty/glfw/include",
+		"%{wks.location}/Engine/Thirdparty/glad/include",
+		"%{wks.location}/Engine/Thirdparty/fmt/include/",
+		"%{wks.location}/Engine/Thirdparty/glm",
 	}
 
 	links {
-		"Oniun",
+		"Kryos",
+	}
+
+	defines {
+		"FMT_HEADER_ONLY",
 	}
 
 	filter "system:windows"
 		systemversion "latest"
-		defines { "O_PLATFORM_WINDOWS" }
+		defines { "KY_PLATFORM_WINDOWS" }
+		filter "action:vs*"
+			buildoptions {
+				"/utf-8"
+			}
 
 	filter "configurations:Debug"
-		defines { "O_DEBUG" }
+		defines { "KY_DEBUG" }
 		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines { "O_RELEASE" }
+		defines { "KY_RELEASE" }
 		runtime "Release"
 		optimize "On"
 		symbols "On"
 
 	filter "configurations:Dist"
 		kind "WindowedApp"
-		defines { "O_DIST" }
+		defines { "KY_DIST" }
 		runtime "Release"
 		optimize "On"
 		symbols "Off"
