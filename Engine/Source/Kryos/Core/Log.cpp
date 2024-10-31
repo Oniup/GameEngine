@@ -1,4 +1,5 @@
 #include "Kryos/Core/Defines.h"
+#include "Kryos/Core/Application.h"
 #include "Kryos/Core/Log.h"
 #include <filesystem>
 #include <fmt/format.h>
@@ -6,57 +7,63 @@
 namespace Kryos
 {
 
+	Kryos::Log* Log::s_Instance = nullptr;
+
 	const std::string_view LogEntry::SeverityToString() const
 	{
 		switch (Severity)
 		{
-		case LogOutput_Trace:		return "Trace";
-		case LogOutput_VerboseInfo: return "Verbose";
-		case LogOutput_Info:		return "Info";
-		case LogOutput_Warning:		return "Warning";
-		case LogOutput_Error:		return "Error";
-		case LogOutput_Fatal:		return "Fatal";
+		case LogSeverity_Trace:		return "Trace";
+		case LogSeverity_Verbose:	return "Verbose";
+		case LogSeverity_Info:		return "Info";
+		case LogSeverity_Warning:	return "Warning";
+		case LogSeverity_Error:		return "Error";
+		case LogSeverity_Fatal:		return "Fatal";
 		default:					return "Unknown";
 		}
 	}
 
-	const fmt::color LogEntry::SeverityToColor() const 
-	{
-		switch (Severity)
-		{
-		case LogOutput_Trace:		return fmt::color::gray;
-		case LogOutput_VerboseInfo: return fmt::color::dark_gray;
-		case LogOutput_Info:		return fmt::color::white;
-		case LogOutput_Warning:		return fmt::color::light_golden_rod_yellow;
-		case LogOutput_Error:		return fmt::color::indian_red;
-		case LogOutput_Fatal:		return fmt::color::indian_red;
-		default:					return fmt::color::white;
-		}
-	}
-
-	LogOutput::LogOutput(int severityFilter /*= LogOutput_Trace | LogOutput_VerboseInfo*/)
-		: m_Severity((LogOutput_Trace | LogOutput_VerboseInfo | LogOutput_Info | LogOutput_Warning | LogOutput_Error | LogOutput_Fatal) & ~severityFilter)
+	LogOutput::LogOutput(LogOutputSeverityFlags severityFilter /*= LogOutput_Trace | LogOutput_VerboseInfo*/)
+		: m_Severity((LogSeverity_Trace | LogSeverity_Verbose | LogSeverity_Info | LogSeverity_Warning | LogSeverity_Error | LogSeverity_Fatal) & ~severityFilter)
 	{
 	}
 
-	TerminalLogOutput::TerminalLogOutput(int severityFilter /*= LogOutput_Trace | LogOutput_VerboseInfo*/)
+	TerminalLogOutput::TerminalLogOutput(LogOutputSeverityFlags severityFilter /*= LogOutput_Trace | LogOutput_VerboseInfo*/)
 		: LogOutput(severityFilter) 
 	{
 	}
 	
 	void TerminalLogOutput::Print(const LogEntry& entry)
 	{
-		std::FILE* file;
-		if (entry.Severity > LogOutput_Warning)
-			file = stderr;
-		else
-			file = stdout;
+		if (m_Severity & entry.Severity)
+		{
+			std::FILE* file;
+			if (entry.Severity > LogSeverity_Warning)
+				file = stderr;
+			else
+				file = stdout;
 
-		fmt::print(file, fmt::emphasis::italic | fg(entry.SeverityToColor()), "[{} {}:{}:{}]: {}\n",
-			entry.SeverityToString(), std::filesystem::path(entry.File).string(), entry.Function, entry.Line, entry.Message);
+			fmt::print(file, SeverityFormatStyle(entry), "[{} {}:{}:{}]: {}\n", entry.SeverityToString(), 
+				std::filesystem::path(entry.File).filename().string(), entry.Function, entry.Line, entry.Message);
+			std::fflush(file);
+		}
 	}
 
-	FileLogOutput::FileLogOutput(const std::string& outputPath, int severityFilter /*= LogOutput_Trace | LogOutput_VerboseInfo*/)
+	const fmt::text_style TerminalLogOutput::SeverityFormatStyle(const LogEntry& entry)
+	{
+		switch (entry.Severity)
+		{
+		case LogSeverity_Trace:		return fmt::emphasis::italic | fmt::fg(fmt::rgb(KY_COLOR_RGB_DARKER_GREY));
+		case LogSeverity_Verbose:	return fmt::emphasis::italic | fmt::fg(fmt::rgb(KY_COLOR_RGB_DARKER_GREY));
+		case LogSeverity_Info:		return fmt::emphasis::italic | fmt::fg(fmt::rgb(KY_COLOR_RGB_GREY));
+		case LogSeverity_Warning:	return fmt::fg(fmt::rgb(KY_COLOR_RGB_ORANGE_YELLOW));
+		case LogSeverity_Error:		return fmt::fg(fmt::rgb(KY_COLOR_RGB_RED));
+		case LogSeverity_Fatal:		return fmt::emphasis::bold | fmt::fg(fmt::rgb(KY_COLOR_RGB_DEEP_RED));
+		default:					return fmt::fg(fmt::rgb(KY_COLOR_RGB_GREY));
+		}
+	}
+
+	FileLogOutput::FileLogOutput(const std::string& outputPath, LogOutputSeverityFlags severityFilter /*= LogOutput_Trace | LogOutput_VerboseInfo*/)
 		: LogOutput(severityFilter), m_OutputPath(outputPath)
 	{
 		KY_ASSERT(!m_OutputPath.empty(), "A file output requires a path to dump logs");
@@ -66,34 +73,31 @@ namespace Kryos
 	{
 		std::FILE* file = std::fopen(m_OutputPath.c_str(), "a");
 
-		fmt::print(file, fmt::emphasis::italic | fg(entry.SeverityToColor()), "[{} {}:{}:{}]: {}\n",
-			entry.SeverityToString(), std::filesystem::path(entry.File).string(), entry.Function, entry.Line, entry.Message);
+		fmt::print(file, "[{} {}:{}:{}]: {}\n",
+			entry.SeverityToString(), std::filesystem::path(entry.File).filename().string(), entry.Function, entry.Line, entry.Message);
+	}
+
+	Log::Log()
+	{
+		s_Instance = this;
 	}
 
 	Log::~Log()
 	{
 		for (LogOutput* output : m_Outputs)
 			delete output;
+		s_Instance = nullptr;
 	}
 
 	void Log::PushOutput(LogOutput* output)
 	{
+		KY_ASSERT(output, "Log output is nullptr");
+		s_Instance->m_Outputs.push_back(output);
 	}
 
 	void Log::PrintToAllOutputs(const LogEntry& entry)
 	{
-
-	}
-
-	void Log::ImplPushOutput(LogOutput* output)
-	{
-		KY_ASSERT(output, "Log output is nullptr");
-		m_Outputs.push_back(output);
-	}
-
-	void Log::ImplPrintToAllOutputs(const LogEntry& entry)
-	{
-		for (LogOutput* output : m_Outputs)
+		for (LogOutput* output : s_Instance->m_Outputs)
 			output->Print(entry);
 	}
 

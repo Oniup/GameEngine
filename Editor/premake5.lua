@@ -1,9 +1,9 @@
 project "KryosEditor"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++17"
-	targetdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	cppdialect "C++20"
+	targetdir("%{wks.location}/bin/" .. OutputDir .. "/%{prj.name}")
+	objdir("%{wks.location}/bin-int/" .. OutputDir .. "/%{prj.name}")
 
 	files {
 		"Source/**.h",
@@ -11,6 +11,7 @@ project "KryosEditor"
 	}
 
 	includedirs {
+		"Source",
 		"%{wks.location}/Engine/Source",
 		"%{wks.location}/Engine/Thirdparty/glfw/include",
 		"%{wks.location}/Engine/Thirdparty/glad/include",
@@ -23,7 +24,11 @@ project "KryosEditor"
 	}
 
 	defines {
+		"_CRT_SECURE_NO_WARNINGS",
 		"FMT_HEADER_ONLY",
+		VersionMajor,
+		VersionMinor,
+		VersionPatch,
 	}
 
 	filter "system:windows"

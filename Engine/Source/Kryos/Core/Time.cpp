@@ -16,7 +16,7 @@ namespace Kryos
 
 	float Time::GetSeconds()
 	{
-		return glfwGetTime();
+		return static_cast<float>(glfwGetTime());
 	}
 
 	Timer::Timer()

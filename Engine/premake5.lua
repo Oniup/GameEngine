@@ -3,10 +3,10 @@ include "Thirdparty"
 project "Kryos"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "Off"
-	targetdir("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir("%{wks.location}/bin/" .. OutputDir .. "/%{prj.name}")
+	objdir("%{wks.location}/bin-int/" .. OutputDir .. "/%{prj.name}")
 
 	files {
 		"Source/**.h",
@@ -34,7 +34,11 @@ project "Kryos"
 	}
 
 	defines {
+		"_CRT_SECURE_NO_WARNINGS",
 		"FMT_HEADER_ONLY",
+		VersionMajor,
+		VersionMinor,
+		VersionPatch,
 	}
 
 	filter "system:windows"

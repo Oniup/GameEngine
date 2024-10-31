@@ -7,7 +7,10 @@ workspace "Kryos Game Engine"
 	}
 	startproject "KryosEditor"
 
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+VersionMajor = "KY_VERSION_MAJOR=0"
+VersionMinor = "KY_VERSION_MINOR=0"
+VersionPatch = "KY_VERSION_PATCH=0"
 
 include "Engine"
 include "Editor"

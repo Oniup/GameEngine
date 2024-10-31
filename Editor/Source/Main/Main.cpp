@@ -1,37 +1,36 @@
 #define GLFW_INCLUDE_NONE
 
-#include "Kryos/Core/Application.h"
-#include "Kryos/Core/Defines.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <vector>
+#include "Main/Main.h"
+#include <Kryos/Core/Log.h>
 #include <iostream>
 
-// - Finish application implementation
-// - Test log impl and its integrating into application as a module
 // - Start renderer module implementation and window handle
 // - Start ImGui module 
 
+KryosEditor::KryosEditor(Kryos::ApplicationSpecification&& specification) 
+	: Kryos::Application(std::move(specification))
+{
+	Kryos::Log* log = PushModule<Kryos::Log>();
+	log->PushOutput(new Kryos::TerminalLogOutput(Kryos::LogSeverity_None));
+
+	KY_INFO("Test info message");
+	KY_TRACE("Test trace message");
+	KY_VERBOSE("Test verbose message");
+	KY_WARNING("Test warning message");
+	KY_ERROR("Test error message");
+	KY_FATAL("Test fatal message");
+
+	SetupRequiredModules();
+}
+
 int main(int argc, char** argv)
 {
-	glfwInit();
-	glfwWindowHint(GLFW_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_VERSION_MINOR, 6);
-	const glm::ivec2 winSize = glm::ivec2(600, 600);
-	GLFWwindow* window = glfwCreateWindow(winSize.x, winSize.y, "Test Window", nullptr, nullptr);
-	glfwMakeContextCurrent(window);
-	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		glClearColor(0.7f, 0.5f, 0.4f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glfwPollEvents();
-		glfwSwapBuffers(window);
-	}
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	KryosEditor editor(Kryos::ApplicationSpecification {
+		.Name				= "Kryos Editor",
+		.Version			= glm::ivec3(KY_VERSION_MAJOR, KY_VERSION_MINOR, KY_VERSION_PATCH),
+		.WorkingDirectory	= "",
+		.Arguments			= Kryos::ApplicationArguments(argc, argv),
+	});
+	editor.Run();
 	return 0;
 }

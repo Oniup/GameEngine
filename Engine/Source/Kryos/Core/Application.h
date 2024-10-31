@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kryos/Core/ApplicationModule.h"
+#include "Kryos/Core/Log.h"
 #include "Kryos/Core/Defines.h"
 #include <glm/glm.hpp>
 #include <mutex>
@@ -39,24 +40,24 @@ namespace Kryos
 	{
 	public:
 		Application(ApplicationSpecification&& specification);
-		 virtual ~Application();
+		virtual ~Application();
 
-		virtual void OnStart() {}
 		void Run();
+		void SetupRequiredModules();
 
 		template <typename TModule, typename... TArgs>
 		static TModule* PushModule(TArgs&&... args)
 		{
-			m_Modules.emplace(Meta::GetTypeHash<TModule>(), new TModule(std::forward<TArgs>(args)...));
-			KY_ASSERT(m_Modules.back().second, "Failed to load");
-			return static_cast<TModule*>(m_Modules.back().second);
+			s_Instance->m_Modules.emplace_back(Meta::GetTypeHash<TModule>(), new TModule(std::forward<TArgs>(args)...));
+			KY_ASSERT(s_Instance->m_Modules.back().second, "Failed to load");
+			return static_cast<TModule*>(s_Instance->m_Modules.back().second);
 		}
 
 		template <typename TModule>
 		static TModule* GetModule()
 		{
 			constexpr size_t hash = Meta::GetTypeHash<TModule>();
-			for (auto entry : m_Modules)
+			for (auto entry : s_Instance->m_Modules)
 			{
 				if (entry.first == hash)
 					return static_cast<TModule*>(entry.second);
