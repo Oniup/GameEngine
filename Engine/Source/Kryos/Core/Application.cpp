@@ -1,5 +1,3 @@
-#define GLFW_INCLUDE_NONE
-
 #include "Kryos/Core/Application.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -9,43 +7,33 @@ namespace Kryos
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application(ApplicationSpecification&& specification)
-		: m_Secification(std::move(specification)), m_Running(true)
+	Application::Application(ApplicationInfo&& info)
+		: m_Info(std::move(info))
 	{
 		s_Instance = this;
 	}
 
 	Application::~Application()
 	{
-		for (auto entry : m_Modules)
-			delete entry.second;
+		for (auto it = m_Modules.rbegin(); it != m_Modules.rend(); it++)
+			delete it->second;
 	}
 
 	void Application::Run()
 	{
-		glfwInit();
-		glfwWindowHint(GLFW_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_VERSION_MINOR, 6);
-		const glm::ivec2 winSize = glm::ivec2(600, 600);
-		GLFWwindow* window = glfwCreateWindow(winSize.x, winSize.y, "Test Window", nullptr, nullptr);
-		glfwMakeContextCurrent(window);
-		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-
-		while (!glfwWindowShouldClose(window))
+		while (!m_Renderer->GetMainWindow().IsClosing())
 		{
-			glClearColor(0.7f, 0.5f, 0.4f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			glfwPollEvents();
-			glfwSwapBuffers(window);
-		}
+		 	glClearColor(0.2f, 0.6f, 0.9f, 1.0f);
+		 	glClear(GL_COLOR_BUFFER_BIT);
 
-		glfwDestroyWindow(window);
-		glfwTerminate();
+			glfwPollEvents();
+			m_Renderer->GetMainWindow().SwapBuffers();
+		}
 	}
 
 	void Application::SetupRequiredModules()
 	{
-		// ...
+		m_Renderer = PushModule<RendererContext>(m_Info.Name);
 	}
 
 }

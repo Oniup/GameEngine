@@ -43,7 +43,7 @@ namespace Kryos
 			else
 				file = stdout;
 
-			fmt::print(file, SeverityFormatStyle(entry), "[{} {}:{}:{}]: {}\n", entry.SeverityToString(), 
+			fmt::print(file, SeverityFormatStyle(entry), "[{} {}-{}:{}]: {}\n", entry.SeverityToString(), 
 				std::filesystem::path(entry.File).filename().string(), entry.Function, entry.Line, entry.Message);
 			std::fflush(file);
 		}
@@ -97,8 +97,11 @@ namespace Kryos
 
 	void Log::PrintToAllOutputs(const LogEntry& entry)
 	{
-		for (LogOutput* output : s_Instance->m_Outputs)
-			output->Print(entry);
+		if (s_Instance)
+		{
+			for (LogOutput* output : s_Instance->m_Outputs)
+				output->Print(entry);
+		}
 	}
 
 }

@@ -36,6 +36,9 @@ project "Kryos"
 	defines {
 		"_CRT_SECURE_NO_WARNINGS",
 		"FMT_HEADER_ONLY",
+		"GLFW_INCLUDE_NONE",
+
+		"KY_RENDERER_BACKEND_OPENGL",
 		VersionMajor,
 		VersionMinor,
 		VersionPatch,

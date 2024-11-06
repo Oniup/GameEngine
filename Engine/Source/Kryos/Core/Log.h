@@ -98,9 +98,12 @@ namespace Kryos
 		}												\
 	)
 
-#define KY_TRACE(...) KY_INTERNAL_LOG_MESSAGE(Trace, __VA_ARGS__)
-#define KY_VERBOSE(...) KY_INTERNAL_LOG_MESSAGE(Verbose, __VA_ARGS__)
-#define KY_INFO(...) KY_INTERNAL_LOG_MESSAGE(Info, __VA_ARGS__)
+#ifndef DISABLE_DEBUG_INFO_LOGS
+#	define KY_TRACE(...) KY_INTERNAL_LOG_MESSAGE(Trace, __VA_ARGS__)
+#	define KY_VERBOSE(...) KY_INTERNAL_LOG_MESSAGE(Verbose, __VA_ARGS__)
+#	define KY_INFO(...) KY_INTERNAL_LOG_MESSAGE(Info, __VA_ARGS__)
+#endif
+
 #define KY_WARNING(...) KY_INTERNAL_LOG_MESSAGE(Warning, __VA_ARGS__)
 #define KY_ERROR(...) KY_INTERNAL_LOG_MESSAGE(Error, __VA_ARGS__)
 #define KY_FATAL(...) KY_INTERNAL_LOG_MESSAGE(Fatal, __VA_ARGS__)

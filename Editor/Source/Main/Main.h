@@ -5,6 +5,6 @@
 class KryosEditor : public Kryos::Application
 {
 public:
-	KryosEditor(Kryos::ApplicationSpecification&& specification);
+	KryosEditor(Kryos::ApplicationInfo&& info);
 	~KryosEditor() override = default;
 };
