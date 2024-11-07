@@ -1,8 +1,12 @@
 #include "Kryos/Core/Defines.h"
-#include "Kryos/Renderer/RHI/OpenGL/GraphicsContextGL.h"
 #include "Kryos/Core/Log.h"
+#include "Kryos/Renderer/RHI/OpenGL/GraphicsContextGL.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <imgui/imgui.h>
+// imgui.h must be in front of the impl files
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 namespace Kryos::RHI
 {
@@ -27,6 +31,30 @@ namespace Kryos::RHI
 	GraphicsContextGL::~GraphicsContextGL()
 	{
 		KY_VERBOSE("Destroying OpenGL Graphics Context");
+	}
+
+	void GraphicsContextGL::InitializePlatformImGui(GLFWwindow* window)
+	{
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+#ifdef __EMSCRIPTEN__
+		ImGui_ImplGlfw_InstallEmscriptenCallbacks(window, "#canvas");
+#endif
+		ImGui_ImplOpenGL3_Init(GetGLSLStringVersion().c_str());
+	}
+
+	void GraphicsContextGL::DestroyPlatformImGui()
+	{
+		ImGui_ImplOpenGL3_Shutdown();
+	}
+
+	void GraphicsContextGL::PlatformImGuiBeginFrame()
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+	}
+
+	void GraphicsContextGL::PlatformImGuiRenderFrame()
+	{
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 }

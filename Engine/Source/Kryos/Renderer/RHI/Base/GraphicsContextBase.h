@@ -1,5 +1,7 @@
 #pragma once
 
+struct GLFWwindow;
+
 namespace Kryos::RHI
 {
 
@@ -11,6 +13,11 @@ namespace Kryos::RHI
 
 		virtual void Initialize() {}
 		virtual void Destroy() {}
+
+		virtual void InitializePlatformImGui(GLFWwindow* window) = 0;
+		virtual void DestroyPlatformImGui() = 0;
+		virtual void PlatformImGuiBeginFrame() = 0;
+		virtual void PlatformImGuiRenderFrame() = 0;
 	};
 
 }

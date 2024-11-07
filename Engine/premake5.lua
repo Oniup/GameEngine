@@ -25,12 +25,15 @@ project "Kryos"
 		"Thirdparty/glfw/include",
 		"Thirdparty/glad/include",
 		"Thirdparty/fmt/include",
+		"Thirdparty/imgui/imgui",
+		"Thirdparty/imgui",
 		"Thirdparty/glm",
 	}
 
 	links {
 		"GLFW",
 		"GLAD",
+		"ImGui"
 	}
 
 	defines {

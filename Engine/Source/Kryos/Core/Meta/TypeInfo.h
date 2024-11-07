@@ -3,12 +3,6 @@
 #include <string_view>
 #include <array>
 
-#ifdef _MSC_VER
-#	include <xhash>
-#else
-#	include <hash_func>
-#endif
-
 namespace Kryos::Meta
 {
 
@@ -64,9 +58,20 @@ namespace Kryos::Meta
 	}
 
 	template<typename T>
-	constexpr size_t GetTypeHash()
+	constexpr uint64_t GetTypeHash()
 	{
-		return std::hash <std::string_view>{}(GetTypeName<T>());
+		constexpr uint64_t prime = 0x00000100000001b3;
+		constexpr uint64_t offset = 0xcbf29ce484222325;
+		constexpr std::string_view name = GetTypeName<T>();
+
+		uint64_t hash = offset;
+		for (char ch : name)
+		{
+			hash *= prime;
+			hash ^= (uint64_t)ch;
+		}
+
+		return hash;
 	}
 
 }

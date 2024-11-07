@@ -11,14 +11,14 @@ namespace Kryos::RHI
 	WindowGL::WindowGL(GraphicsContextGL* context, const std::string_view title, int width, int height, WindowOptionFlags flags)
 		: WindowBase(context, flags)
 	{
-		glfwInit();
 		KY_ASSERT(ValidateFlags(flags), 
 			"Cannot have more than one window mode active. These options include: WindowOptionFlag_FullscreenMode, WindowOptionFlag_WindowedMode, and WindowOptionFlag_BorderlessMode");
 		KY_ASSERT(title.data()[title.size()] == '\0', "Title must '\\0' termated string");
 
 		glm::ivec2 version = context->GetMinimumAPIVersion();
-		glfwWindowHint(GLFW_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_VERSION_MINOR, 6);
+		glfwWindowHint(GLFW_VERSION_MAJOR, version.x);
+		glfwWindowHint(GLFW_VERSION_MINOR, version.y);
+
 #ifdef KY_PLATFORM_MACOS
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif

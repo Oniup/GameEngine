@@ -1,4 +1,5 @@
 #include "Kryos/Core/Application.h"
+#include "Kryos/Core/Time.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -23,10 +24,16 @@ namespace Kryos
 	{
 		while (!m_Renderer->GetMainWindow().IsClosing())
 		{
+			Time::UpdateDeltaTime();
+
 		 	glClearColor(0.2f, 0.6f, 0.9f, 1.0f);
 		 	glClear(GL_COLOR_BUFFER_BIT);
 
+			for (auto& [id, modules] : m_Modules)
+				modules->OnUpdate();
+
 			glfwPollEvents();
+			m_Renderer->DrawFrame();
 			m_Renderer->GetMainWindow().SwapBuffers();
 		}
 	}

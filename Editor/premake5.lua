@@ -17,6 +17,7 @@ project "KryosEditor"
 		"%{wks.location}/Engine/Thirdparty/glad/include",
 		"%{wks.location}/Engine/Thirdparty/fmt/include/",
 		"%{wks.location}/Engine/Thirdparty/glm",
+		"%{wks.location}/Engine/Thirdparty/imgui",
 	}
 
 	links {

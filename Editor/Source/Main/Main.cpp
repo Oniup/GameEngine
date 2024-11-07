@@ -1,6 +1,8 @@
 #include "Main/Main.h"
 #include <Kryos/Core/Log.h>
 #include <Kryos/Renderer/RHI/WindowBase.h>
+#include <Kryos/Renderer/RendererContext.h>
+#include <Kryos/Renderer/ImGuiContext.h>
 #include <iostream>
 
 KryosEditor::KryosEditor(Kryos::ApplicationInfo&& info) 
@@ -10,6 +12,8 @@ KryosEditor::KryosEditor(Kryos::ApplicationInfo&& info)
 	log->PushOutput(new Kryos::TerminalLogOutput(Kryos::LogSeverity_None));
 
 	SetupRequiredModules();
+
+	PushModule<Kryos::ImGuiContext>(GetModule<Kryos::RendererContext>());
 }
 
 int main(int argc, char** argv)

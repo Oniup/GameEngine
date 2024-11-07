@@ -17,10 +17,11 @@ namespace Kryos
 		Application(ApplicationInfo&& info);
 		virtual ~Application();
 
+		inline static const ApplicationInfo& GetInfo() { return s_Instance->m_Info; }
+		inline static std::vector<std::pair<size_t, ApplicationModule*>>& GetAllModules() { return s_Instance->m_Modules; }
+
 		void Run();
 		void SetupRequiredModules();
-
-		inline static const ApplicationInfo& GetInfo() { return s_Instance->m_Info; }
 
 		template <typename TModule, typename... TArgs>
 		static TModule* PushModule(TArgs&&... args)

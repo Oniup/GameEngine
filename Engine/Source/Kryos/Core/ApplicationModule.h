@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Kryos/Core/Time.h"
 #include "Kryos/Core/Meta/TypeInfo.h"
 
 namespace Kryos
@@ -14,7 +13,7 @@ namespace Kryos
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 
-		virtual void OnUpdate(const Time& time) {}
+		virtual void OnUpdate() {}
 		virtual void OnImGuiRender() {}
 	};
 

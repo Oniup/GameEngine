@@ -64,7 +64,7 @@ project "GLFW"
 			"glfw/src/wgl_context.c",
 			"glfw/src/egl_context.c",
 			"glfw/src/osmesa_context.c",
-			"glfw/src/win32_module.c"
+			"glfw/src/win32_module.c",
 		}
 
 		defines { 
