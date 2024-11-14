@@ -46,7 +46,7 @@ namespace Kryos
 		int m_Severity;
 	};
 
-	class TerminalLogOutput : public LogOutput
+	class TerminalLogOutput final : public LogOutput
 	{
 	public:
 		TerminalLogOutput(LogOutputSeverityFlags severityFilter = KY_LOG_OUTPUT_DEFAULT_SEVERITY_FILTER);
@@ -58,7 +58,7 @@ namespace Kryos
 		static const fmt::text_style SeverityFormatStyle(const LogEntry& entry);
 	};
 
-	class FileLogOutput : public LogOutput
+	class FileLogOutput final : public LogOutput
 	{
 	public:
 		FileLogOutput(const std::string& outputPath, LogOutputSeverityFlags severityFilter = KY_LOG_OUTPUT_DEFAULT_SEVERITY_FILTER);
@@ -70,7 +70,7 @@ namespace Kryos
 		std::string m_OutputPath;
 	};
 
-	class Log : public ApplicationModule
+	class Log final : public ApplicationModule
 	{
 	public:
 		Log();
@@ -98,12 +98,25 @@ namespace Kryos
 		}												\
 	)
 
-#ifndef DISABLE_DEBUG_INFO_LOGS
-#	define KY_TRACE(...) KY_INTERNAL_LOG_MESSAGE(Trace, __VA_ARGS__)
-#	define KY_VERBOSE(...) KY_INTERNAL_LOG_MESSAGE(Verbose, __VA_ARGS__)
-#	define KY_INFO(...) KY_INTERNAL_LOG_MESSAGE(Info, __VA_ARGS__)
-#endif
+#if (defined(KY_DEBUG) || defined(KY_RELEASE)) || (defined(KY_STILL_USE_LOG) && defined(KY_DIST)) 
+#	ifndef KY_DISABLE_DEBUG_INFO_LOGS
+#		define KY_TRACE(...) KY_INTERNAL_LOG_MESSAGE(Trace, __VA_ARGS__)
+#		define KY_VERBOSE(...) KY_INTERNAL_LOG_MESSAGE(Verbose, __VA_ARGS__)
+#		define KY_INFO(...) KY_INTERNAL_LOG_MESSAGE(Info, __VA_ARGS__)
+#	else
+#		define KY_TRACE(...)
+#		define KY_VERBOSE(...)
+#		define KY_INFO(...)
+#	endif
 
-#define KY_WARNING(...) KY_INTERNAL_LOG_MESSAGE(Warning, __VA_ARGS__)
-#define KY_ERROR(...) KY_INTERNAL_LOG_MESSAGE(Error, __VA_ARGS__)
-#define KY_FATAL(...) KY_INTERNAL_LOG_MESSAGE(Fatal, __VA_ARGS__)
+#	define KY_WARNING(...) KY_INTERNAL_LOG_MESSAGE(Warning, __VA_ARGS__)
+#	define KY_ERROR(...) KY_INTERNAL_LOG_MESSAGE(Error, __VA_ARGS__)
+#	define KY_FATAL(...) KY_INTERNAL_LOG_MESSAGE(Fatal, __VA_ARGS__)
+#else
+#	define KY_TRACE(...)
+#	define KY_VERBOSE(...)
+#	define KY_INFO(...)
+#	define KY_WARNING(...)
+#	define KY_ERROR(...)
+#	define KY_FATAL(...)
+#endif

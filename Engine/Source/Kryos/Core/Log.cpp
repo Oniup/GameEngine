@@ -55,7 +55,7 @@ namespace Kryos
 		{
 		case LogSeverity_Trace:		return fmt::emphasis::italic | fmt::fg(fmt::rgb(KY_COLOR_RGB_DARKER_GREY));
 		case LogSeverity_Verbose:	return fmt::emphasis::italic | fmt::fg(fmt::rgb(KY_COLOR_RGB_DARKER_GREY));
-		case LogSeverity_Info:		return fmt::emphasis::italic | fmt::fg(fmt::rgb(KY_COLOR_RGB_GREY));
+		case LogSeverity_Info:		return fmt::fg(fmt::rgb(KY_COLOR_RGB_GREY));
 		case LogSeverity_Warning:	return fmt::fg(fmt::rgb(KY_COLOR_RGB_ORANGE_YELLOW));
 		case LogSeverity_Error:		return fmt::fg(fmt::rgb(KY_COLOR_RGB_RED));
 		case LogSeverity_Fatal:		return fmt::emphasis::bold | fmt::fg(fmt::rgb(KY_COLOR_RGB_DEEP_RED));

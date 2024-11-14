@@ -1,4 +1,4 @@
-project "GLAD"
+project "glad"
 	kind "StaticLib"
 	language "C"
 	targetdir("%{wks.location}/bin/" .. OutputDir .. "/%{prj.name}")
@@ -14,20 +14,26 @@ project "GLAD"
 		"glad/include/KHR/khrplatform.h",
 	}
 
+	filter "system:linux"
+		pic "On"
+		systemversion "latest"
+		staticruntime "On"
+
+	filter "system:window"
+		systemversion "latest"
+		staticruntime "On"
+
 	filter "configurations:Debug"
-		defines { "O_DEBUG" }
+		defines { "KY_DEBUG" }
 		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines { "O_RELEASE" }
+		defines { "KY_RELEASE" }
 		runtime "Release"
-		optimize "On"
 		symbols "On"
 
 	filter "configurations:Dist"
-		kind "WindowedApp"
-		defines { "O_DIST" }
+		defines { "KY_DIST" }
 		runtime "Release"
-		optimize "On"
 		symbols "Off"

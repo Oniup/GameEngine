@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Kryos/Renderer/RHI/GraphicsContext.h"
-#include "Kryos/Core/Defines.h"
-#include <glm/glm.hpp>
 #include <string_view>
+#include <glm/glm.hpp> 
 
 struct GLFWwindow;
 
-namespace Kryos::RHI
+namespace Kryos
 {
 
 	enum WindowOptionFlag
@@ -34,13 +32,15 @@ namespace Kryos::RHI
 		inline operator int&() { return Flags; }
 	};
 
-	class WindowBase
+	class Window
 	{
 	public:
-		WindowBase(GraphicsContext* context, WindowOptionFlags flags);
-		virtual ~WindowBase();
+		Window(const std::string_view title, int width, int height, WindowOptionFlags flags);
+		~Window();
 
 		static bool ValidateFlags(WindowOptionFlags flags);
+
+		inline static glm::ivec2 GetOpenGLVersion() { return glm::ivec2(4, 5); }
 
 		glm::ivec2 GetSize();
 		glm::ivec2 GetFrameSize();
@@ -50,14 +50,13 @@ namespace Kryos::RHI
 		inline const GLFWwindow* GetNative() const { return m_Window; }
 		inline const WindowOptionFlags& GetFlags() const { return m_Flags; }
 
-		virtual void SwapBuffers();
-		virtual void MakeCurrentContext();
+		void SwapBuffers();
+		void MakeCurrentContext();
 		bool IsClosing() const;
 
 	protected:
 		GLFWwindow* m_Window;
 		WindowOptionFlags m_Flags;
-		GraphicsContext* m_Context;
 	};
 
 }

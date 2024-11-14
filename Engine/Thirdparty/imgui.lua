@@ -1,4 +1,4 @@
-project "ImGui"
+project "imgui"
 	kind "StaticLib"
 	language "C++"
 	targetdir("%{wks.location}/bin/" .. OutputDir .. "/%{prj.name}")
@@ -7,6 +7,7 @@ project "ImGui"
 	includedirs {
 		"imgui/imgui",
 		"glfw/include",
+		"glad/include"
 	}
 
 	files {
@@ -25,8 +26,6 @@ project "ImGui"
 		"imgui/imgui/backends/imgui_impl_glfw.cpp",
 		"imgui/imgui/backends/imgui_impl_opengl3.h",
 		"imgui/imgui/backends/imgui_impl_opengl3.cpp",
-		-- "imgui/imgui/backends/imgui_impl_vulkan.h",
-		-- "imgui/imgui/backends/imgui_impl_vulkan.cpp",
 	}
 
 	filter "system:linux"
@@ -50,4 +49,4 @@ project "ImGui"
 	filter "configurations:Dist"
 		runtime "Release"
 		symbols "Off"
-		optimize "On"
+		optimize "Off"

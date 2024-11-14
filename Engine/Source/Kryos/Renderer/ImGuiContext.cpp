@@ -3,12 +3,12 @@
 #include "Kryos/Core/Application.h"
 #include <glfw/glfw3.h>
 #include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 namespace Kryos
 {
 
-	ImGuiContext::ImGuiContext(RendererContext* renderer)
-		: m_Graphics(&renderer->GetGraphicsContext())
+	ImGuiContext::ImGuiContext(RendererContext& renderer)
 	{
 		KY_INFO("Initializing ImGui Context");
 
@@ -16,7 +16,7 @@ namespace Kryos
 		ImGui::CreateContext();
 		m_IO = &ImGui::GetIO();
 		m_IO->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
-		m_IO->ConfigViewportsNoTaskBarIcon = true;
+		m_IO->ConfigViewportsNoTaskBarIcon = false;
 
 		ImGui::StyleColorsDark();
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -26,8 +26,10 @@ namespace Kryos
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		m_Graphics->InitializePlatformImGui(renderer->GetMainWindow().GetNative());
-		renderer->m_ImGui = this;
+		ImGui_ImplGlfw_InitForOpenGL(renderer.GetMainWindow().GetNative(), true);
+		ImGui_ImplOpenGL3_Init(renderer.GetGlslVersion().c_str());
+
+		renderer.SetImGuiContext(this);
 	}
 
 	ImGuiContext::~ImGuiContext()
@@ -35,29 +37,28 @@ namespace Kryos
 		if (m_IO)
 		{
 			KY_INFO("Destroying ImGui Context");
-			m_Graphics->DestroyPlatformImGui();
+			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplGlfw_Shutdown();
 			ImGui::DestroyContext();
 
-			m_Graphics = nullptr;
 			m_IO = nullptr;
 
 			RendererContext* renderer = Application::GetModule<RendererContext>();
-			renderer->m_ImGui = nullptr;
+			renderer->SetImGuiContext(nullptr);
 		}
 	}
 
-	void ImGuiContext::Draw()
+	void ImGuiContext::Draw(RendererContext& renderer)
 	{
-		m_Graphics->PlatformImGuiBeginFrame();
 		ImGui_ImplGlfw_NewFrame();
+		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
 
 		for (auto& [hash, entry] : Application::GetAllModules())
 			entry->OnImGuiRender();
 
 		ImGui::Render();
-		m_Graphics->PlatformImGuiRenderFrame();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		if (m_IO->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{

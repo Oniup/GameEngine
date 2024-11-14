@@ -1,4 +1,4 @@
-project "GLFW"
+project "glfw"
 	kind "StaticLib"
 	language "C"
 	targetdir("%{wks.location}/bin/" .. OutputDir .. "/%{prj.name}")
@@ -73,19 +73,15 @@ project "GLFW"
 		}
 
 	filter "configurations:Debug"
-		defines { "O_DEBUG" }
 		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines { "O_RELEASE" }
 		runtime "Release"
 		optimize "On"
 		symbols "On"
 
 	filter "configurations:Dist"
-		kind "WindowedApp"
-		defines { "O_DIST" }
 		runtime "Release"
 		optimize "On"
 		symbols "Off"

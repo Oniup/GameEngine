@@ -1,10 +1,17 @@
-# Directories
-.vs/
+# Build
 bin/
 bin-int/
 
-# Files
+# Visual Studio
 *.vcxproj
 *.vcxproj.user
 *.vcxproj.filters
 *.sln
+.vs/
+
+# JetBrains Rider
+# .idea/
+
+# ImGui
+imgui.ini
+

@@ -10,7 +10,6 @@
 
 namespace Kryos
 {
-	
 	class Application
 	{
 	public:
@@ -27,18 +26,17 @@ namespace Kryos
 		static TModule* PushModule(TArgs&&... args)
 		{
 			s_Instance->m_Modules.emplace_back(Meta::GetTypeHash<TModule>(), new TModule(std::forward<TArgs>(args)...));
-			KY_ASSERT(s_Instance->m_Modules.back().second, "Failed to load");
 			return static_cast<TModule*>(s_Instance->m_Modules.back().second);
 		}
 
 		template <typename TModule>
 		static TModule* GetModule()
 		{
-			constexpr size_t hash = Meta::GetTypeHash<TModule>();
-			for (auto entry : s_Instance->m_Modules)
+			constexpr size_t targetHash = Meta::GetTypeHash<TModule>();
+			for (auto& [hash, module] : s_Instance->m_Modules)
 			{
-				if (entry.first == hash)
-					return static_cast<TModule*>(entry.second);
+				if (hash == targetHash)
+					return static_cast<TModule*>(module);
 			}
 			return nullptr;
 		}
@@ -49,12 +47,13 @@ namespace Kryos
 			return GetModule<TModule>() != nullptr;
 		}
 
-	private:
+	protected:
+		bool m_Running = true;
 		ApplicationInfo m_Info;
 		std::vector<std::pair<size_t, ApplicationModule*>> m_Modules;
-		bool m_Running = true;
 		RendererContext* m_Renderer = nullptr;
 
+	private:
 		static Application* s_Instance;
 	};
 

@@ -13,9 +13,9 @@ project "KryosEditor"
 	includedirs {
 		"Source",
 		"%{wks.location}/Engine/Source",
+		"%{wks.location}/Engine/Thirdparty/fmt/include",
 		"%{wks.location}/Engine/Thirdparty/glfw/include",
 		"%{wks.location}/Engine/Thirdparty/glad/include",
-		"%{wks.location}/Engine/Thirdparty/fmt/include/",
 		"%{wks.location}/Engine/Thirdparty/glm",
 		"%{wks.location}/Engine/Thirdparty/imgui",
 	}
@@ -29,7 +29,6 @@ project "KryosEditor"
 		"FMT_HEADER_ONLY",
 		"GLFW_INCLUDE_NONE",
 
-		"KY_RENDERER_BACKEND_OPENGL",
 		VersionMajor,
 		VersionMinor,
 		VersionPatch,
@@ -42,6 +41,9 @@ project "KryosEditor"
 			buildoptions {
 				"/utf-8"
 			}
+			-- disablewarnings {
+			-- 	"C26439",
+			-- }
 
 	filter "configurations:Debug"
 		defines { "KY_DEBUG" }

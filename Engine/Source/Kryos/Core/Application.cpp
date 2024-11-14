@@ -11,6 +11,8 @@ namespace Kryos
 	Application::Application(ApplicationInfo&& info)
 		: m_Info(std::move(info))
 	{
+		int initResult = glfwInit();
+		KY_ASSERT(initResult, "Failed to initialize glfw");
 		s_Instance = this;
 	}
 
@@ -18,21 +20,22 @@ namespace Kryos
 	{
 		for (auto it = m_Modules.rbegin(); it != m_Modules.rend(); it++)
 			delete it->second;
+		glfwTerminate();
 	}
 
 	void Application::Run()
 	{
-		while (!m_Renderer->GetMainWindow().IsClosing())
+		while (m_Running)
 		{
-			Time::UpdateDeltaTime();
+			glfwPollEvents();
+			if (m_Renderer->GetMainWindow().IsClosing())
+				m_Running = false;
 
-		 	glClearColor(0.2f, 0.6f, 0.9f, 1.0f);
-		 	glClear(GL_COLOR_BUFFER_BIT);
+			Time::UpdateDeltaTime();
 
 			for (auto& [id, modules] : m_Modules)
 				modules->OnUpdate();
 
-			glfwPollEvents();
 			m_Renderer->DrawFrame();
 			m_Renderer->GetMainWindow().SwapBuffers();
 		}
@@ -40,7 +43,7 @@ namespace Kryos
 
 	void Application::SetupRequiredModules()
 	{
-		m_Renderer = PushModule<RendererContext>(m_Info.Name);
+		m_Renderer = PushModule<RendererContext>(m_Info);
 	}
 
 }

@@ -38,6 +38,9 @@
 #define KY_COLOR_RGB_GREY			180, 180, 166
 #define KY_COLOR_RGB_DARKER_GREY	103, 103, 95
 
+#define KY_INVALID32 std::numeric_limits<uint32_t>::max()
+#define KY_INVALID   std::numeric_limits<uint64_t>::max()
+
 #if defined(KY_DEBUG) || defined(KY_RELEASE)
 #	define KY_ASSERT(_Expression, ...) \
 		if (!(_Expression))	\

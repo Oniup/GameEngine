@@ -22,18 +22,18 @@ project "Kryos"
 
 	includedirs {
 		"Source",
+		"Thirdparty/fmt/include",
 		"Thirdparty/glfw/include",
 		"Thirdparty/glad/include",
-		"Thirdparty/fmt/include",
 		"Thirdparty/imgui/imgui",
 		"Thirdparty/imgui",
 		"Thirdparty/glm",
 	}
 
 	links {
-		"GLFW",
-		"GLAD",
-		"ImGui"
+		"glfw",
+		"glad",
+		"imgui",
 	}
 
 	defines {
@@ -41,7 +41,6 @@ project "Kryos"
 		"FMT_HEADER_ONLY",
 		"GLFW_INCLUDE_NONE",
 
-		"KY_RENDERER_BACKEND_OPENGL",
 		VersionMajor,
 		VersionMinor,
 		VersionPatch,
@@ -52,8 +51,11 @@ project "Kryos"
 		defines { "KY_PLATFORM_WINDOWS" }
 		filter "action:vs*"
 			buildoptions {
-				"/utf-8"
+				"/utf-8",
 			}
+			-- disablewarnings {
+			-- 	"C26439",
+			-- }
 
 	filter "configurations:Debug"
 		defines { "KY_DEBUG" }
@@ -70,4 +72,4 @@ project "Kryos"
 		defines { "KY_DIST" }
 		runtime "Release"
 		optimize "On"
-		symbols "On"
+		symbols "Off"

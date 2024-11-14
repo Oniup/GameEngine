@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Kryos/Core/ApplicationInfo.h"
 #include "Kryos/Core/ApplicationModule.h"
-#include "Kryos/Renderer/RHI/GraphicsContext.h"
 #include "Kryos/Renderer/ImGuiContext.h"
-#include "Kryos/Renderer/RHI/WindowBase.h"
+#include "Kryos/Renderer/RHI/Window.h"
+#include "Kryos/Renderer/RHI/Shader.h"
+#include "Kryos/Renderer/RHI/VertexBuffer.h"
 #include <string_view>
 
 namespace Kryos
@@ -11,23 +13,24 @@ namespace Kryos
 
 	class RendererContext : public ApplicationModule
 	{
-		friend ImGuiContext;
-
 	public:
-		RendererContext(const std::string_view windowTitle, RHI::WindowOptionFlags windowFlags = RHI::WindowOptionFlags());
+		RendererContext(const ApplicationInfo& info, WindowOptionFlags windowFlags = WindowOptionFlags(), bool enableContextValidationLayers = true);
 		~RendererContext() override;
 
-		inline RHI::GraphicsContext& GetGraphicsContext() { return m_Graphics; }
-		inline RHI::WindowBase& GetMainWindow() { return m_Window; }
-		inline const RHI::WindowBase& GetMainWindow() const { return m_Window; }
-		inline const RHI::GraphicsContext& GetGraphicsContext() const { return m_Graphics; }
+		inline Window& GetMainWindow() { return m_Window; }
+		inline const Window& GetMainWindow() const { return m_Window; }
+		inline const std::string& GetGlslVersion() const { return m_GlslVersion; }
+		inline void SetImGuiContext(ImGuiContext* context) { m_ImGui = context; }
 
 		void DrawFrame();
 
 	private:
-		RHI::GraphicsContext m_Graphics;
-		RHI::Window m_Window;
+		Window m_Window;
 		ImGuiContext* m_ImGui = nullptr;
+		Shader m_Shader;
+		VertexBuffer m_Buffer;
+		// uint32_t m_Buffers[3];
+		std::string m_GlslVersion;
 	};
 
 }
