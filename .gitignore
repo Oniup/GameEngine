@@ -10,7 +10,7 @@ bin-int/
 .vs/
 
 # JetBrains Rider
-# .idea/
+.idea/
 
 # ImGui
 imgui.ini
